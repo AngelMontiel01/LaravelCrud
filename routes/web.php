@@ -11,7 +11,7 @@ use App\Http\Controllers\EstatusController;
 
 Route::get('/', function () {
     // Si el usuario está autenticado, lo redirige a home, sino lo manda al login
-    return auth()->check() ? redirect()->route('home') : redirect()->route('login');
+    return auth()->check() ? redirect()->route('pedidos') : redirect()->route('login');
 });
 
 

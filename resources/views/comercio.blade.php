@@ -81,43 +81,43 @@
         });
 
         function cargarComercial() {
-           
+
             $.ajax({
                 url: '/comercial',
                 method: 'GET',
                 success: function (data) {
-                   
+
                     let tableBody = $('#comercialTable tbody');
-                    tableBody.empty(); 
+                    tableBody.empty();
 
                     data.data.forEach(function (comercio) {
-                    
-                        let row = `
-                        <tr>
-                            <td>${comercio.id}</td>
-                            <td>${comercio.nombre}</td>
-                            <td>${comercio.apellido1}</td>
-                            <td>${comercio.apellido2}</td>
 
-                            <td>${comercio.ciudad}</td>
-                            <td>${comercio.comision}</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm btnEdit" onclick="obtenerComercial(${comercio.id})">Editar</button>
-                                <button class="btn btn-danger btn-sm btnDelete" onclick="eliminarComercial(${comercio.id})">Eliminar</button>
-                            </td>
-                        </tr>
-                    `;
+                        let row = `
+                            <tr>
+                                <td>${comercio.id}</td>
+                                <td>${comercio.nombre}</td>
+                                <td>${comercio.apellido1}</td>
+                                <td>${comercio.apellido2}</td>
+
+                                <td>${comercio.ciudad}</td>
+                                <td>${comercio.comision}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm btnEdit" onclick="obtenerComercial(${comercio.id})">Editar</button>
+                                    <button class="btn btn-danger btn-sm btnDelete" onclick="eliminarComercial(${comercio.id})">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
                         tableBody.append(row);
                     });
                     // Inicializar DataTable 
                     elementosRol();
                     $('#comercialTable').DataTable();
-               
+
                 },
                 error: function (xhr, status, error) {
                     if (xhr.status === 403) {
                         alert("No tienes permisos para acceder a los comerciales.");
-                        window.location.href = "/"; 
+                        window.location.href = "/";
                     } else {
                         console.error("Error en la solicitud:", error);
                         alert("Hubo un error al cargar los pedidos.");
@@ -125,7 +125,7 @@
                 }
             });
         }
-        
+
 
         function obtenerComercial(id) {
             fetch(`/comercial/${id}`)
@@ -137,15 +137,26 @@
                     $('#ciudad_id').val(data.data.ciudad_id);
                     $('#comision').val(data.data.comision);
 
-                    $('#comercialForm').data('comercial-id', id); 
-                    $('#submitBtn').text('Actualizar Comercial'); 
+                    $('#comercialForm').data('comercial-id', id);
+                    $('#submitBtn').text('Actualizar Comercial');
                 })
                 .catch(() => alert("Error al obtener el Comercial"));
         }
 
 
-        function insertarComercial(){
-            let data ={
+        function insertarComercial() {
+            var ciudad = $('#ciudad_id').val();
+
+
+
+            if (ciudad === '0' || ciudad === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para la ciudad.');
+                $('#ciudad_id').focus();
+                return;
+            }
+
+
+            let data = {
                 nombre: $('#nombre').val(),
                 apellido1: $('#paterno').val(),
                 apellido2: $('#materno').val(),
@@ -181,9 +192,19 @@
 
 
         function actualizaComercial() {
+
             let id = $('#comercialForm').data('comercial-id');
             if (!id) return alert("Selecciona un comercial primero");
 
+            var ciudad = $('#ciudad_id').val();
+
+
+
+            if (ciudad === '0' || ciudad === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para la ciudad.');
+                $('#ciudad_id').focus();
+                return;
+            }
             let data = {
                 nombre: $('#nombre').val(),
                 apellido1: $('#paterno').val(),
@@ -220,7 +241,7 @@
             });
         }
 
-       
+
 
         function eliminarComercial(id) {
             if (!confirm('¿Seguro que deseas eliminar este comercial?')) return;
@@ -261,7 +282,7 @@
         }
 
         function elementosRol() {
-           
+
             if (userRole == 3 || userRole == 1) {
                 $('.btnDelete').prop('disabled', true);
                 $('.btnEdit').prop('disabled', true);

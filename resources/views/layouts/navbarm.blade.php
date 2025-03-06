@@ -27,7 +27,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('comerciales')}}">Comercial</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    {{-- <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                           Reporte
                         </a>
@@ -35,7 +35,7 @@
                           <li><a class="dropdown-item" href="#">Pedidos</a></li>
                           <li><a class="dropdown-item" href="#">Movimientos</a></li>
                         </ul>
-                      </li>
+                      </li> --}}
                 </ul>
 
                 <!-- Formulario de logout -->

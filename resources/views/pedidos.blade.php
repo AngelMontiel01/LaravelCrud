@@ -56,11 +56,12 @@
     <script>
         const userRole = @json($rol); // El rol del usuario
         $(document).ready(function () {
+
+
             cargarPedidos();
             cargarClientes();
             cargarComerciales();
             cargarEstatus();
-            elementosRol();
 
             // Manejo del formulario de creación de pedido
             $('#pedidoForm').submit(function (e) {
@@ -73,6 +74,7 @@
             });
         });
 
+
         function cargarPedidos() {
             $.ajax({
                 url: '/pedidos',
@@ -82,22 +84,25 @@
                     tableBody.empty();
                     data.data.forEach(function (pedido) {
                         let row = `
-                                     <tr>
-                                         <td>${pedido.id}</td>
-                                         <td>${pedido.cantidad}</td>
-                                         <td>${pedido.cliente}</td>
-                                         <td>${pedido.comercial}</td>
-                                         <td>${pedido.estatus}</td>
-                                         <td>
-                                             <button class="btn btn-warning btn-sm btnEdit" onclick="obtenerPedido(${pedido.id})">Editar</button>
-                                             <button class="btn btn-danger btn-sm btnDelete" onclick="eliminarPedido(${pedido.id})">Eliminar</button>
-                                         </td>
-                                     </tr>
-                                 `;
+                                                                 <tr>
+                                                                     <td>${pedido.id}</td>
+                                                                     <td>${pedido.cantidad}</td>
+                                                                     <td>${pedido.cliente}</td>
+                                                                     <td>${pedido.comercial}</td>
+                                                                     <td>${pedido.estatus}</td>
+                                                                     <td>
+                                                                         <button class="btn btn-warning btn-sm btnEdit" onclick="obtenerPedido(${pedido.id})">Editar</button>
+                                                                         <button class="btn btn-danger btn-sm btnDelete" onclick="eliminarPedido(${pedido.id})">Eliminar</button>
+                                                                     </td>
+                                                                 </tr>
+                                                             `;
                         tableBody.append(row);
                     });
                     $('#pedidosTable').DataTable();
+
                     elementosRol();
+                    Editar();
+
                 },
                 error: function (xhr, status, error) {
                     if (xhr.status === 403) {
@@ -123,12 +128,28 @@
                     $('#estatus_id').val(data.data.estatus_id);
                     $('#pedidoForm').data('pedido-id', id);
                     $('#submitBtn').text('Actualizar Pedido');
-                    Editar()
+                    Editar();
                 })
                 .catch(() => alert("Error al obtener el pedido"));
         }
-        
+
         function insertarPedido() {
+            var client = $('#cliente_id').val();
+            var comercial = $('#comercial_id').val();
+
+         
+            if (client === '0' || client === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para el cliente.');
+                $('#cliente_id').focus();
+                return; 
+            }
+
+            if (comercial === '0' || comercial === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para el comercial.');
+                $('#comercial_id').focus(); 
+                return; 
+            }
+
             let data = {
                 cantidad: $('#cantidad').val(),
                 cliente_id: $('#cliente_id').val(),
@@ -148,7 +169,7 @@
                     alert(response.message);
                     if (response.success) {
                         $('#pedidoForm')[0].reset();
-                        $('#pedidosTable').DataTable().ajax.reload();
+                        cargarPedidos();
                     }
                 },
                 error: function (xhr, status, error) {
@@ -168,6 +189,21 @@
             let id = $('#pedidoForm').data('pedido-id');
             if (!id) return alert("Selecciona un pedido primero");
 
+            var client = $('#cliente_id').val();
+            var comercial = $('#comercial_id').val();
+
+         
+            if (client === '0' || client === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para el cliente.');
+                $('#cliente_id').focus();
+                return; 
+            }
+
+            if (comercial === '0' || comercial === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para el comercial.');
+                $('#comercial_id').focus(); 
+                return; 
+            }
             let data = {
                 cantidad: $('#cantidad').val(),
                 cliente_id: $('#cliente_id').val(),
@@ -273,6 +309,15 @@
         }
 
 
+        function elementosRol() {
+            if (userRole == 3) {
+                $('.btnDelete').prop('disabled', true);
+                $('.btnEdit').prop('disabled', true);
+                $('#submitBtn').prop('disabled', true);
+                $('#cantidad, #cliente_id, #comercial_id, #estatus_id').prop('disabled', true);
+            }
+        }
+
         function Editar() {
             if (userRole == 2) {
 
@@ -280,24 +325,12 @@
                 $('#cantidad, #cliente_id, #comercial_id').prop('disabled', true);
                 $('#estatus_id').prop('disabled', false);
 
-                console.log($('#pedidoForm').data('pedido-id'))
                 if ($('#pedidoForm').data('pedido-id')) {
                     $('#submitBtn').show().text('Actualizar Estatus');
+                    $('.btnDelete').hide();
                 } else {
                     $('#submitBtn').hide();
                 }
-
-            }
-
-        }
-
-        function elementosRol() {
-            if (userRole == 3) {
-
-                $('.btnDelete').prop('disabled', true);
-                $('.btnEdit').prop('disabled', true);
-                $('#submitBtn').prop('disabled', true);
-                $('#cantidad, #cliente_id, #comercial_id, #estatus_id').prop('disabled', true);
             }
         }
 

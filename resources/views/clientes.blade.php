@@ -10,6 +10,7 @@
         <div class="card-body">
             <form id="clienteForm">
                 <div class="row">
+                    
                     <div class="col-md-3">
                         <label for="nombre" class="form-label">Nombre:</label>
                         <input type="text" id="nombre" class="form-control" required>
@@ -139,6 +140,21 @@
 
         // Insertar un nuevo cliente
         function insertarCliente() {
+            var ciudad = $('#ciudad_id').val();
+            var categoria = $('#categoria_id').val();
+
+         
+            if (ciudad === '0' || ciudad === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para la ciudad.');
+                $('#ciudad_id').focus();
+                return; 
+            }
+
+            if (categoria === '0' || categoria === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para la categoria.');
+                $('#categoria_id').focus(); 
+                return; 
+            }
             let data = {
                 nombre: $('#nombre').val(),
                 apellido1: $('#paterno').val(),
@@ -178,6 +194,21 @@
             let id = $('#clienteForm').data('cliente-id');
             if (!id) return alert("Selecciona un Cliente primero");
 
+            var ciudad = $('#ciudad_id').val();
+            var categoria = $('#categoria_id').val();
+
+         
+            if (ciudad === '0' || ciudad === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para la ciudad.');
+                $('#ciudad_id').focus();
+                return; 
+            }
+
+            if (categoria === '0' || categoria === '') {
+                alert('Por favor, selecciona un valor diferente a 0 para la categoria.');
+                $('#categoria_id').focus(); 
+                return; 
+            }
             let data = {
                 nombre: $('#nombre').val(),
                 apellido1: $('#paterno').val(),
