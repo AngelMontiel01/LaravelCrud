@@ -35,7 +35,8 @@
 
     <!-- Tabla de Pedidos -->
     <div class="card">
-        <div class="card-header">Lista de Pedidos</div>
+        <div class="card-header">Lista de Pedidos <a href="{{ route('descargar.pdf') }}" class="btn btn-primary">Descargar PDF</a>
+        </div>
         <div class="card-body">
             <table id="pedidosTable" class="table table-striped">
                 <thead>
@@ -73,8 +74,6 @@
                 }
             });
         });
-
-
         function cargarPedidos() {
             $.ajax({
                 url: '/pedidos',
@@ -115,8 +114,6 @@
                 }
             });
         }
-
-
         function obtenerPedido(id) {
             fetch(`/pedidos/${id}`)
                 .then(res => res.json())
@@ -333,8 +330,6 @@
                 }
             }
         }
-
-
 
     </script>
 

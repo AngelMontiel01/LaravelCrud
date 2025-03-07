@@ -8,33 +8,46 @@
     <div class="card mb-4">
         <div class="card-header">Nuevo Cliente</div>
         <div class="card-body">
-            <form id="clienteForm">
+            <form id="clienteForm" class="needs-validation" novalidate>
                 <div class="row">
-                    
                     <div class="col-md-3">
                         <label for="nombre" class="form-label">Nombre:</label>
                         <input type="text" id="nombre" class="form-control" required>
+                        <div class="invalid-feedback">El nombre es obligatorio.</div>
                     </div>
+
                     <div class="col-md-3">
                         <label for="paterno" class="form-label">Paterno:</label>
                         <input type="text" id="paterno" class="form-control" required>
+                        <div class="invalid-feedback">El apellido paterno es obligatorio.</div>
                     </div>
+
                     <div class="col-md-3">
                         <label for="materno" class="form-label">Materno:</label>
                         <input type="text" id="materno" class="form-control" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="ciudad_id" class="form-label">Ciudad</label>
-                        <select id="ciudad_id" class="form-select" required></select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="categoria_id" class="form-label">Categoria:</label>
-                        <select id="categoria_id" class="form-select" required></select>
+                        <div class="invalid-feedback">El apellido materno es obligatorio.</div>
                     </div>
 
+                    <div class="col-md-3">
+                        <label for="ciudad_id" class="form-label">Ciudad</label>
+                        <select id="ciudad_id" class="form-select" required>
+                            <option value="">Seleccione una ciudad</option>
+                        </select>
+                        <div class="invalid-feedback">Seleccione una ciudad válida.</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="categoria_id" class="form-label">Categoría:</label>
+                        <select id="categoria_id" class="form-select" required>
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                        <div class="invalid-feedback">Seleccione una categoría válida.</div>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3" id="submitBtn">Crear Cliente</button>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary mt-3">Crear Cliente</button>
             </form>
+
         </div>
     </div>
 
@@ -62,22 +75,36 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let form = document.getElementById("clienteForm");
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();  // Evita el envío por defecto
+                // Quitar la clase de validación antes de proceder con cualquier acción
+                form.classList.remove("was-validated");
+                if (!form.checkValidity()) {
+                    event.stopPropagation(); // Detiene la propagación del evento si hay errores
+                    form.classList.add("was-validated"); // Agrega la clase si hay errores
+                } else {
+                    // Si el formulario es válido, ejecuta la función correspondiente
+                    if ($('#clienteForm').data('cliente-id')) {
+                        actualizaCliente();
+                    } else {
+                        insertarCliente(); // Si no hay ID, inserta el cliente
+                    }
+                    // Restablecer el formulario después de la acción (opcional)
+                    form.reset();  // Si deseas limpiar el formulario
+                }
+            });
+        });
+
+
         const userRole = @json($rol); // El rol del usuario
 
         $(document).ready(function () {
             cargarClientes();
             cargarCategoria();
             cargarCiudad();
-            
-            // Manejo del formulario de creación de cliente
-            $('#clienteForm').submit(function (e) {
-                e.preventDefault();
-                if ($('#clienteForm').data('cliente-id')) {
-                    actualizaCliente(); // Si hay un ID, actualiza el cliente
-                } else {
-                    insertarCliente(); // Si no hay ID, crea un nuevo cliente
-                }
-            });
         });
 
         // Función para cargar clientes
@@ -91,19 +118,19 @@
 
                     data.data.forEach(function (cliente) {
                         let row = `
-                                    <tr>
-                                        <td>${cliente.id}</td>
-                                        <td>${cliente.nombre}</td>
-                                        <td>${cliente.apellido1}</td>
-                                        <td>${cliente.apellido2}</td>
-                                        <td>${cliente.ciudad}</td>
-                                        <td>${cliente.categoria}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm btnEdit" onclick="obtenerCliente(${cliente.id})">Editar</button>
-                                            <button class="btn btn-danger btn-sm btnDelete" onclick="eliminarCliente(${cliente.id})">Eliminar</button>
-                                        </td>
-                                    </tr>
-                                `;
+                                                                <tr>
+                                                                    <td>${cliente.id}</td>
+                                                                    <td>${cliente.nombre}</td>
+                                                                    <td>${cliente.apellido1}</td>
+                                                                    <td>${cliente.apellido2}</td>
+                                                                    <td>${cliente.ciudad}</td>
+                                                                    <td>${cliente.categoria}</td>
+                                                                    <td>
+                                                                        <button class="btn btn-warning btn-sm btnEdit" onclick="obtenerCliente(${cliente.id})">Editar</button>
+                                                                        <button class="btn btn-danger btn-sm btnDelete" onclick="eliminarCliente(${cliente.id})">Eliminar</button>
+                                                                    </td>
+                                                                </tr>
+                                                             `;
                         tableBody.append(row);
                     });
 
@@ -140,21 +167,6 @@
 
         // Insertar un nuevo cliente
         function insertarCliente() {
-            var ciudad = $('#ciudad_id').val();
-            var categoria = $('#categoria_id').val();
-
-         
-            if (ciudad === '0' || ciudad === '') {
-                alert('Por favor, selecciona un valor diferente a 0 para la ciudad.');
-                $('#ciudad_id').focus();
-                return; 
-            }
-
-            if (categoria === '0' || categoria === '') {
-                alert('Por favor, selecciona un valor diferente a 0 para la categoria.');
-                $('#categoria_id').focus(); 
-                return; 
-            }
             let data = {
                 nombre: $('#nombre').val(),
                 apellido1: $('#paterno').val(),
@@ -197,17 +209,17 @@
             var ciudad = $('#ciudad_id').val();
             var categoria = $('#categoria_id').val();
 
-         
+
             if (ciudad === '0' || ciudad === '') {
                 alert('Por favor, selecciona un valor diferente a 0 para la ciudad.');
                 $('#ciudad_id').focus();
-                return; 
+                return;
             }
 
             if (categoria === '0' || categoria === '') {
                 alert('Por favor, selecciona un valor diferente a 0 para la categoria.');
-                $('#categoria_id').focus(); 
-                return; 
+                $('#categoria_id').focus();
+                return;
             }
             let data = {
                 nombre: $('#nombre').val(),
@@ -297,7 +309,7 @@
         }
 
         function elementosRol() {
-            
+
             if (userRole == 3 || userRole == 1) {
                 $('.btnDelete').prop('disabled', true);
                 $('.btnEdit').prop('disabled', true);
@@ -305,9 +317,6 @@
                 $('#nombre, #paterno, #materno,#ciudad_id,#categoria_id').prop('disabled', true);
             }
         }
-
-
-
     </script>
 
 @endsection

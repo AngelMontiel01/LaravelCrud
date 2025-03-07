@@ -8,6 +8,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ComercialController;
 use App\Http\Controllers\EstatusController;
+use App\Http\Controllers\PDFController;
 
 Route::get('/', function () {
     // Si el usuario está autenticado, lo redirige a home, sino lo manda al login
@@ -34,6 +35,7 @@ Route::get('/estatus', [EstatusController::class, 'index']);
 Route::get('/categoria', [CategoriaController::class, 'index']);
 Route::get('/ciudad', [CiudadController::class, 'index']);
 
+
 //  Pedidos
 Route::get('/pedidos', [PedidoController::class, 'index'])->middleware('rol:1,2,3'); // Todos pueden ver
 Route::post('/pedidos', [PedidoController::class, 'store'])->middleware('rol:1'); // Solo rol 1 puede crear
@@ -54,3 +56,8 @@ Route::post('/comercial', [ComercialController::class, 'store'])->middleware('ro
 Route::get('/comercial/{id}', [ComercialController::class, 'edit'])->middleware('rol:1,2,3'); // Todos pueden ver
 Route::put('/comercial/{id}', [ComercialController::class, 'update'])->middleware('rol:2'); // Solo rol 2 puede modificar
 Route::delete('/comercial/{id}', [ComercialController::class, 'destroy'])->middleware('rol:2'); // Solo rol 2 puede eliminar
+
+//PDF
+Route::get('/descargar-pdf', [PDFController::class,'generarPdf'])->name('descargar.pdf');
+Route::get('/descargar-pdf-Rechazados', [PDFController::class,'generarPdfPedidosR'])->name('descargar.pdfq');
+
